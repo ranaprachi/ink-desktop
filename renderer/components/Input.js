@@ -6,6 +6,7 @@ const Input = styled(BootstrapInput)`
   box-sizing: border-box;
   padding: 20px;
   border-radius: 8px;
+  font-size: 14px;
 `;
 
 export default Input;

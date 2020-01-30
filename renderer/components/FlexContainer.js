@@ -8,8 +8,6 @@ const FlexContainer = styled.div`
             flex-grow: ${props.grow  || 1};
             justify-content: ${props.justifyContent || ''};
             align-items: ${props.alignItems || ''};
-            min-height: 100%;
-            padding: 0;
         `
     }  
 `;

@@ -11,7 +11,6 @@ import {
   Button,
   Form,
   FormGroup,
-  Container,
 } from '@bootstrap-styled/v4';
 import Header from '../../components/Header';
 import Page from '../../components/Page';
@@ -39,6 +38,10 @@ import useFade from '../../effects/useFade';
 import { initialMockCommits, trackEmoji } from '../../mocks';
 import ActivityIcon from '../../components/ActivityIcon';
 import requestFromWorker from '../../lib/requestFromWorker';
+import Space from '../../components/Space';
+import Text from '../../components/Text';
+import Size from '../../components/Size';
+import bg from './../bg.jpeg';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -101,6 +104,15 @@ const IconLink = styled.div`
   &:hover {
     opacity: 0.8;
   }
+`;
+
+const SendButton = styled(Button)`
+  float: right;
+  margin-bottom: 20px;
+`;
+
+const MediaPlayerContainer = styled.div`
+  background: #0B0B0B;
 `;
 
 export default function Repo() {
@@ -204,7 +216,8 @@ export default function Repo() {
         <title>ununu • Ink</title>
       </Head>
       <Header user={user} project={project} />
-      <FlexContainer fluid={true}>
+      <Space padding="140px 0 0">
+        <FlexContainer>
         {project && (
           <TallRow>
             <Panel md={3}>
@@ -217,7 +230,7 @@ export default function Repo() {
                   </IconLink>
                 )}
               />
-              {delta.tracks && (
+              {delta && delta.tracks && (
                 <>
                   {delta.tracks.slice(1, 5).map((trackName, index) => (
                     <TrackLine key={`new-${index}`}>
@@ -225,7 +238,6 @@ export default function Repo() {
                       <TrackName>{trackName}</TrackName>
                     </TrackLine>
                   ))}
-
                   {delta.tracks.length > 5 && (
                     <MoreTracksLine>
                       <MoreInfo>
@@ -233,7 +245,6 @@ export default function Repo() {
                       </MoreInfo>
                     </MoreTracksLine>
                   )}
-
                   {delta.tracks.length === 0 && (
                     <NoNewTracksLine>
                       <MoreInfo>No new tracks.</MoreInfo>
@@ -283,7 +294,7 @@ export default function Repo() {
                   />
                 </FormGroup>
                 <Button
-                  disabled={!(delta.tracks && delta.tracks.length > 0)}
+                  disabled={!(delta && delta.tracks && delta.tracks.length > 0)}
                   className="mr-2"
                   type="submit"
                 >
@@ -307,8 +318,13 @@ export default function Repo() {
             </Panel>
             <Col
               className="bg-info"
-              style={{ boxShadow: 'inset 0 0 7px rgba(0, 0, 0, .8)' }}
+              style={{ boxShadow: 'inset 0 0 7px rgba(0, 0, 0, .8)', backgroundImage: `url(${bg})`}}
             >
+              <Row>
+                <Size width="100%" height="230px">
+                  <MediaPlayerContainer />
+                </Size>
+              </Row>
               <Row className="mt-3">
                 <Col md={12}>
                   <GraphTitle>
@@ -316,47 +332,60 @@ export default function Repo() {
                     <span>History</span>
                   </GraphTitle>
                 </Col>
-              </Row>
-              <Row>
                 <Col md={12}>
                   <CommitGraph graph={initialMockCommits.concat(graph)} />
                 </Col>
               </Row>
             </Col>
             <Panel md={3}>
-              <PanelHeader title="Share" fontWeight="500" />
+              <PanelHeader title={project.name.toUpperCase()} fontWeight="100" fontSize="21px" />
               <Form className="m-2" onSubmit={handleInvite}>
-                <ShareImage style={{ margin: '10px 0' }} />
-                <FormGroup>
-                  <Input
-                    required
-                    type="email"
-                    placeholder="Recipient"
-                    {...bindInvitationRecipient}
-                  />
-                  <Textarea
-                    required
-                    placeholder="Message"
-                    className="mt-2"
-                    {...bindInvitationMessage}
-                  />
-                </FormGroup>
-                <Button className="mr-2" type="submit">
-                  Send
-                </Button>
-                {mailSentTransitions.map(
-                  ({ item, key, props }) =>
-                    item && (
-                      <SendSuccess key={key} style={props}>
-                        Sent!
-                      </SendSuccess>
-                    )
-                )}
+                <Space padding="40px">
+                  <div>
+                    <ShareImage />
+                  </div>
+                </Space>
+                <Space padding="0 20px">
+                  <div>
+                    <Text size="22px" weight="500" align="center">Share it!</Text>
+                    <Space padding="4px 0 24px">
+                      <Text size="18px" weight="300" align="center" height="21px">
+                        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                      </Text>
+                    </Space>
+                    <FormGroup>
+                      <Input
+                        required
+                        type="email"
+                        placeholder="Recipient"
+                        {...bindInvitationRecipient}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Textarea
+                        required
+                        placeholder="Message"
+                        className="mt-2"
+                        {...bindInvitationMessage}
+                      />
+                    </FormGroup>
+                    <SendButton type="submit">Send</SendButton>
+                    {mailSentTransitions.map(
+                      ({ item, key, props }) =>
+                        item && (
+                          <SendSuccess key={key} style={props}>
+                            Sent!
+                          </SendSuccess>
+                        )
+                    )}
+                  </div>
+                </Space>
               </Form>
             </Panel>
           </TallRow>
         )}
       </FlexContainer>
+      </Space>
     </Page>
   );
 }

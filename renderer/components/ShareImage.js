@@ -6,7 +6,7 @@ const Svg = styled.svg`
   height: auto;
 `;
 
-export default function ShareImage({ style }) {
+export default function ShareImage() {
   return (
     <Svg
       width="267"
@@ -14,7 +14,6 @@ export default function ShareImage({ style }) {
       viewBox="0 0 267 207"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={style}
     >
       <circle cx="131.5" cy="103.5" r="103.5" fill="#474747" />
       <path

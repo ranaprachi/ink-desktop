@@ -9,6 +9,7 @@ const Position = styled(({children, ...props}) => React.cloneElement(children, p
             bottom: ${props.bottom || ''};
             left: ${props.left || ''};
             right: ${props.right || ''};
+            z-index: ${props.zIndex || ''};
         `
     }
 `;
