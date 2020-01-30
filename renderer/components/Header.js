@@ -25,40 +25,22 @@ const LogoutLink = styled(Text)`
     text-decoration: underline;
   }
 `
+const Header = ({ user }) => (
+  <Position position="absolute" zIndex={1}>
+    <Size width="100%">
+      <FlexContainer flow="row" justifyContent="space-between" alignItems="center" style={{ background: '#181818' }}>
+        <Space padding="16px">
+          <FlexContainer flow="row" alignItems="center">
+            <UserImage src={gravatar.url(user.email)} alt="User" />
+            <Text color="#fff">{user.email}</Text>
+          </FlexContainer>
+        </Space>
+        <Space padding="16px">
+          <LogoutLink color="#fff">LOGOUT</LogoutLink>
+        </Space>
+      </FlexContainer>
+    </Size>
+  </Position>
+);
 
-export default function Header({ user, project }) {
-  const href = user && user.email ? '/home' : '/login';
-
-  return (
-    <Position position="fixed" top="0" left="0" zIndex={1}>
-      <Size width="100%">
-        <div>
-          <div style={{background: '#181818'}}>
-            <Size height="60px" width="60px">
-              <FlexContainer justifyContent="center" alignItems="center">
-                <Link href={href}>
-                  <Text color="#fff" size="16px" weight="900" family="Bowlby One">INK</Text>
-                </Link>
-              </FlexContainer>
-            </Size>
-          </div>
-          {
-            user ? (
-              <FlexContainer flow="row" justifyContent="space-between" alignItems="center" style={{background: '#181818'}}>
-                <Space padding="16px">
-                  <FlexContainer flow="row" alignItems="center">
-                    <UserImage src={gravatar.url(user.email)} alt="User" />
-                    <Text color="#fff">{user.email}</Text>
-                  </FlexContainer>
-                </Space>
-                <Space padding="16px">
-                  <LogoutLink color="#fff">LOGOUT</LogoutLink>
-                </Space>
-              </FlexContainer>
-            ) : null
-          }
-        </div>
-      </Size>
-    </Position>
-  );
-}
+export default Header;

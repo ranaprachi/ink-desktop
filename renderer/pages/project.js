@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import slugify from 'slugify';
-import { inviteCollaborators } from '../../lib/mail';
+import { inviteCollaborators } from '../lib/mail';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import {
@@ -12,40 +12,42 @@ import {
   Form,
   FormGroup,
 } from '@bootstrap-styled/v4';
-import Header from '../../components/Header';
-import Page from '../../components/Page';
-import Input from '../../components/Input';
-import Textarea from '../../components/Textarea';
-import Panel from '../../components/Panel';
-import PanelHeader from '../../components/PanelHeader';
-import ShareImage from '../../components/ShareImage';
-import useProjects from '../../effects/useProjects';
-import useProjectState from '../../effects/useProjectState';
-import useInput from '../../effects/useInput';
-import useUser from '../../effects/useUser';
-import CommitGraph from '../../components/CommitGraph';
+import Header from '../components/Header';
+import Page from '../components/Page';
+import Input from '../components/Input';
+import Textarea from '../components/Textarea';
+import Panel from '../components/Panel';
+import PanelHeader from '../components/PanelHeader';
+import ShareImage from '../components/ShareImage';
+import useProjects from '../effects/useProjects';
+import useProjectState from '../effects/useProjectState';
+import useInput from '../effects/useInput';
+import useUser from '../effects/useUser';
+import CommitGraph from '../components/CommitGraph';
 import {
   buttonPrimary,
   complementaryPrimary,
   highlightSecondary,
   playerBackground,
-} from '../../layout/colors';
-import HistoryIcon from '../../components/HistoryIcon';
-import FlexContainer from '../../components/FlexContainer';
-import useTemporaryState from '../../effects/useTemporaryState';
+} from '../layout/colors';
+import HistoryIcon from '../components/HistoryIcon';
+import FlexContainer from '../components/FlexContainer';
+import useTemporaryState from '../effects/useTemporaryState';
 import { animated } from 'react-spring';
-import useFade from '../../effects/useFade';
-import { initialMockCommits, trackEmoji } from '../../mocks';
-import ActivityIcon from '../../components/ActivityIcon';
-import requestFromWorker from '../../lib/requestFromWorker';
-import Space from '../../components/Space';
-import Text from '../../components/Text';
-import Size from '../../components/Size';
-import bg from './../bg.jpeg';
+import useFade from '../effects/useFade';
+import { initialMockCommits, trackEmoji } from '../mocks';
+import ActivityIcon from '../components/ActivityIcon';
+import requestFromWorker from '../lib/requestFromWorker';
+import Space from '../components/Space';
+import Text from '../components/Text';
+import Size from '../components/Size';
+import bg from './bg.jpeg';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
   margin: 0 !important;
+  height: 100%;
+  box-sizing: border-box;
 `;
 
 const TrackIcon = styled.em`
@@ -115,8 +117,8 @@ const MediaPlayerContainer = styled.div`
   background: #0B0B0B;
 `;
 
-export default function Repo() {
-  const { query } = useRouter();
+export default function Project({ id }) {
+
   const { projects } = useProjects();
   const { user } = useUser();
   const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
@@ -126,7 +128,7 @@ export default function Repo() {
   });
   const mailSentTransitions = useFade(mailSent);
   const commitSignedTransitions = useFade(commitSigned);
-  const project = projects.find(project => project.id === query.id);
+  const project = projects.find(project => project.id === id);
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
@@ -211,14 +213,10 @@ export default function Repo() {
   });
 
   return (
-    <Page>
-      <Head>
-        <title>ununu • Ink</title>
-      </Head>
-      <Header user={user} project={project} />
-      <Space padding="140px 0 0">
-        <FlexContainer>
-        {project && (
+    <>
+      {user ? <Header user={user} project={project} /> : null}
+      {project ? (
+        <Space padding="77px 0 0">
           <TallRow>
             <Panel md={3}>
               <PanelHeader
@@ -318,7 +316,7 @@ export default function Repo() {
             </Panel>
             <Col
               className="bg-info"
-              style={{ boxShadow: 'inset 0 0 7px rgba(0, 0, 0, .8)', backgroundImage: `url(${bg})`}}
+              style={{ boxShadow: 'inset 0 0 7px rgba(0, 0, 0, .8)', backgroundImage: `url(${bg})` }}
             >
               <Row>
                 <Size width="100%" height="230px">
@@ -383,9 +381,8 @@ export default function Repo() {
               </Form>
             </Panel>
           </TallRow>
-        )}
-      </FlexContainer>
-      </Space>
-    </Page>
+        </Space>
+      ) : null}
+    </>
   );
 }
