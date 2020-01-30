@@ -101,7 +101,7 @@ const CommitGraph = ({ graph }) => {
 
   const makeGraph = (node, level) => {
     const totalSubCommits = getTotalCommits(node);
-    return <>
+    return <React.Fragment key={node.hash}>
       <GraphLine color={GRAPH_COLORS[level]}>
         <Node color={GRAPH_COLORS[level]} node={node} />
       </GraphLine>
@@ -115,13 +115,13 @@ const CommitGraph = ({ graph }) => {
           </div>
         ) : null
       }
-    </>
+    </React.Fragment>
   }
 
   return (
     <Space padding="50px">
       <FlexContainer flow="row">
-        {graph.filter(grp => !!grp).map((graphNode, index) => makeGraph(graphNode, 0))}
+        {graph.filter(grp => !!grp).map((graphNode) => makeGraph(graphNode, 0))}
       </FlexContainer>
     </Space>
   );
