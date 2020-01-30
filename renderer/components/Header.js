@@ -1,23 +1,11 @@
 import styled from 'styled-components';
 import gravatar from 'gravatar';
-import Link from 'next/link';
-import Logo from './Logo';
-import { backgroundPanel, buttonInfo } from '../layout/colors';
-import ProjectIcon from './ProjectIcon';
 import Size from '../components/Size';
 import Position from '../components/Position';
 import Text from '../components/Text';
 import Space from '../components/Space';
 import FlexContainer from '../components/FlexContainer';
-
-
-const UserImage = styled.img`
-  width: 45px;
-  height: 45px;
-  margin-right: 10px;
-  border-radius: 50%;
-  background-color: #ddd;
-`;
+import UserImage from '../components/UserImage';
 
 const LogoutLink = styled(Text)`
   cursor: pointer;
@@ -31,7 +19,7 @@ const Header = ({ user }) => (
       <FlexContainer flow="row" justifyContent="space-between" alignItems="center" style={{ background: '#181818' }}>
         <Space padding="16px">
           <FlexContainer flow="row" alignItems="center">
-            <UserImage src={gravatar.url(user.email)} alt="User" />
+            <UserImage src={gravatar.url(user.email)} alt="User" size="45px" borderColor="#A3C4CB" />
             <Text color="#fff">{user.email}</Text>
           </FlexContainer>
         </Space>

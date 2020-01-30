@@ -1,163 +1,130 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import times from "lodash.times";
+import styled from 'styled-components';
+import { Tooltip } from '@bootstrap-styled/v4';
 import {
   buttonInfo,
-  complementaryPrimary,
-  highlightSecondary,
+  buttonPrimary,
+  buttonSecondary
 } from '../layout/colors';
+import Text from './Text';
+import Space from './Space';
+import FlexContainer from './FlexContainer';
+import UserImage from './UserImage';
+import gravatar from 'gravatar';
 
-const Container = styled.ul`
+// Commit graph config
+const GRAPH_LINE_LENGTH = "100px";
+const GRAPH_LINE_WIDTH = "4px";
+const GRAPH_SUB_BRANCH_DEPTH = "60px";
+const GRAPH_COLORS = [buttonPrimary, buttonSecondary, buttonInfo];
+
+const NodeElement = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: ${props => props.color || '#fff'}
+`;
+
+const GraphLine = styled.div`
+  width: ${GRAPH_LINE_LENGTH};
+  height: 0px;
+  border-bottom: ${GRAPH_LINE_WIDTH} solid ${props => props.color || '#fff'};
   display: flex;
-  flex-flow: column;
-
-  margin: 10px 0 0;
-  padding: 0;
-  list-style: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transform: translateY(${GRAPH_SUB_BRANCH_DEPTH});
 `;
 
-const Dot = styled.div`
-  z-index: 20;
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  margin: 7px 16px 7px 11px;
-  border-radius: 16px;
-  background: ${complementaryPrimary};
-`;
-
-const Line = styled.div`
-  position: absolute;
-  top: 23px;
-  left: 18px;
-  width: 2px;
-  height: 100%;
-  background: ${complementaryPrimary};
-`;
-
-const BranchLine = styled(Line)`
-  top: 8px;
-  left: 30px;
-  z-index: 10;
-  height: 52px;
-  transform: rotate(-33deg);
-  background: ${props => props.color};
-`;
-
-const MergeLine = styled(BranchLine)`
-  top: auto;
-  bottom: -20px;
-  left: 36px;
-  height: 60px;
-  transform: rotate(33deg);
-`;
-
-const AuthorImage = styled.div`
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
-  border-radius: 30px;
-  background: #ddd;
-`;
-
-const BranchGraph = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style: none;
-`;
-
-const Message = styled.p`
-  display: inline-block;
-  font-size: 20px;
-  line-height: 140%;
-  margin: 1px 0;
-  color: ${complementaryPrimary};
-`;
-
-const Item = styled.li`
+const SubBranchContainer = styled.div`
   position: relative;
-  display: flex;
-  flex-flow: column;
-  margin: 0 0 0 ${props => (props.level ? props.level * 30 : 0)}px;
-  padding: 0;
-
-  &:last-child {
-    ${Line} {
-      display: none;
-    }
-  }
-
-  ${AuthorImage} {
-    margin-left: ${props => (props.level && props.level === 1 ? 10 : 40)}px;
-  }
-
-  ${props =>
-    props.color &&
-    css`
-      ${Dot} {
-        background: ${props.color};
-      }
-
-      ${Line} {
-        background: ${props.color};
-      }
-
-      ${Message} {
-        color: ${props.color};
-      }
-    `}
+  transform: translateY(${GRAPH_SUB_BRANCH_DEPTH});
 `;
 
-const Commit = styled.div`
-  display: flex;
-  flex-flow: row;
-  margin-bottom: 16px;
+const BranchConnector = styled.div`
+  position: absolute;
+  top: 0;
+  left: ${props => props.type === "left" ? 0 : ""};
+  right: ${props => props.type === "right" ? 0 : ""};
+  height: ${GRAPH_SUB_BRANCH_DEPTH};
+  border-left: ${GRAPH_LINE_WIDTH} solid ${props => props.color || '#fff'};
 `;
 
-const Name = styled.p`
-  display: inline-block;
-  margin: 1px 6px 1px 0;
-  font-size: 20px;
-  line-height: 140%;
-  color: ${buttonInfo};
-`;
-
-export default function CommitGraph({ graph }) {
+const Node = ({ node, color }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
   return (
-    <Container>
-      {graph.map(({ hash, author, message, subBranch = [] }) => (
-        <Item key={`commit-${hash}`}>
-          <Commit>
-            <Dot />
-            <Line />
-            <AuthorImage />
-            <Name>{author.name}:</Name> <Message>{message}</Message>
-          </Commit>
+    <>
+      <NodeElement color={color} id={node.hash} />
+      <Tooltip
+        placement="top"
+        isOpen={isOpen}
+        toggle={() => setIsOpen(prevIsOpen => !prevIsOpen)}
+        target={node.hash}
+      >
+        <Space padding="5px">
+          <FlexContainer flow="row" alignItems="center">
+            <UserImage src={gravatar.url(node.author.email || "")} alt="Author" size="25px" borderColor={color} />
+            <div>
+              <Text size="12px">{node.message}</Text>
+              <Text size="10px" color="#8B8B8B" align="right">-{node.author.name}</Text>
+            </div>
+          </FlexContainer>
+        </Space>
+      </Tooltip>
+    </>
+  )
+}
 
-          {subBranch.length > 0 && (
-            <>
-              <BranchLine color={highlightSecondary} />
-              <BranchGraph>
-                {subBranch.map(({ hash, author, message }) => (
-                  <Item
-                    key={`commit-${hash}`}
-                    level={1}
-                    color={highlightSecondary}
-                  >
-                    <Commit>
-                      <Dot />
-                      <Line />
-                      <AuthorImage />
-                      <Name>{author.name}:</Name> <Message>{message}</Message>
-                    </Commit>
-                  </Item>
-                ))}
-              </BranchGraph>
-              <MergeLine color={highlightSecondary} />
-            </>
-          )}
-        </Item>
-      ))}
-    </Container>
+const CommitGraph = ({ graph }) => {
+  const getTotalCommits = (node) => {
+    const calculateTotalCommits = (element, initialVal) =>
+      element.subBranch.reduce((accCommits, subElement) => {
+        if (subElement.subBranch && subElement.subBranch.length) {
+          accCommits = calculateTotalCommits(subElement, accCommits);
+        }
+        return ++accCommits;
+      }, initialVal);
+
+    return node.subBranch && node.subBranch.length ? calculateTotalCommits(node, 0) : 0;
+  }
+
+  const makeSubBranch = (subGraph, level) => (
+    <SubBranchContainer>
+      <BranchConnector type="left" color={GRAPH_COLORS[level]} />
+      <FlexContainer flow="row" color={GRAPH_COLORS[level]}>
+        {subGraph.map((subGraphNode, index) => makeGraph(subGraphNode, level))}
+      </FlexContainer>
+      <BranchConnector type="right" color={GRAPH_COLORS[level]} />
+    </SubBranchContainer>
+  );
+
+  const makeGraph = (node, level) => {
+    const totalSubCommits = getTotalCommits(node);
+    return <>
+      <GraphLine color={GRAPH_COLORS[level]}>
+        <Node color={GRAPH_COLORS[level]} node={node} />
+      </GraphLine>
+      {
+        totalSubCommits ? (
+          <div>
+            <FlexContainer flow="row">
+              {times(totalSubCommits, (i) => <GraphLine color={GRAPH_COLORS[level]} key={`graph-line-${i}`} />)}
+            </FlexContainer>
+            {makeSubBranch(node.subBranch, level + 1)}
+          </div>
+        ) : null
+      }
+    </>
+  }
+
+  return (
+    <Space padding="50px">
+      <FlexContainer flow="row">
+        {graph.filter(grp => !!grp).map((graphNode, index) => makeGraph(graphNode, 0))}
+      </FlexContainer>
+    </Space>
   );
 }
+
+export default CommitGraph;

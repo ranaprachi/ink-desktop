@@ -2,8 +2,6 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import slugify from 'slugify';
 import { inviteCollaborators } from '../lib/mail';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
 import {
   Col,
   H5,
@@ -13,7 +11,6 @@ import {
   FormGroup,
 } from '@bootstrap-styled/v4';
 import Header from '../components/Header';
-import Page from '../components/Page';
 import Input from '../components/Input';
 import Textarea from '../components/Textarea';
 import Panel from '../components/Panel';
@@ -31,7 +28,6 @@ import {
   playerBackground,
 } from '../layout/colors';
 import HistoryIcon from '../components/HistoryIcon';
-import FlexContainer from '../components/FlexContainer';
 import useTemporaryState from '../effects/useTemporaryState';
 import { animated } from 'react-spring';
 import useFade from '../effects/useFade';
@@ -114,7 +110,17 @@ const SendButton = styled(Button)`
 `;
 
 const MediaPlayerContainer = styled.div`
-  background: #0B0B0B;
+  background: ${playerBackground};
+`;
+
+const CenterPanel = styled(Col)`
+  overflow: hidden;
+  backgroundImage: url(${bg})
+`;
+
+const CommitGraphContainer = styled(Row)`
+  overflow: auto;
+  height: 100%;
 `;
 
 export default function Project({ id }) {
@@ -314,27 +320,16 @@ export default function Project({ id }) {
                 )}
               </Form>
             </Panel>
-            <Col
-              className="bg-info"
-              style={{ boxShadow: 'inset 0 0 7px rgba(0, 0, 0, .8)', backgroundImage: `url(${bg})` }}
-            >
+            <CenterPanel className="bg-info">
               <Row>
                 <Size width="100%" height="230px">
                   <MediaPlayerContainer />
                 </Size>
               </Row>
-              <Row className="mt-3">
-                <Col md={12}>
-                  <GraphTitle>
-                    <HistoryIcon width={25} marginRight={10} />{' '}
-                    <span>History</span>
-                  </GraphTitle>
-                </Col>
-                <Col md={12}>
-                  <CommitGraph graph={initialMockCommits.concat(graph)} />
-                </Col>
-              </Row>
-            </Col>
+              <CommitGraphContainer className="mt-3">
+                <CommitGraph graph={initialMockCommits.concat(graph)} />
+              </CommitGraphContainer>
+            </CenterPanel>
             <Panel md={3}>
               <PanelHeader title={project.name.toUpperCase()} fontWeight="100" fontSize="21px" />
               <Form className="m-2" onSubmit={handleInvite}>

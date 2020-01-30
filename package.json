@@ -34,6 +34,7 @@
     "electron-store": "^4.0.0",
     "glob": "7.1.5",
     "gravatar": "^1.8.0",
+    "lodash.times": "^4.3.2",
     "md5-file": "4.0.0",
     "next-images": "^1.2.0",
     "nodegit": "^0.25.1",

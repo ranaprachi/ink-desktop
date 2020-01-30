@@ -2,7 +2,7 @@
 // arbitrary will be sufficient.
 export const initialMockCommits = [
   {
-    hash: 'foo',
+    hash: 'fooa',
     author: {
       name: 'Shresth',
     },
@@ -10,23 +10,30 @@ export const initialMockCommits = [
     tags: ['genesis'],
     subBranch: [
       {
-        hash: 'foo1',
+        hash: 'foo1b',
         author: {
           name: 'Emma',
         },
         message: 'Add bass line',
       },
       {
-        hash: 'foo2',
+        hash: 'foo2c',
         author: {
           name: 'Emma',
         },
         message: 'Adjust compressor settings',
       },
+      {
+        hash: 'foo3d',
+        author: {
+          name: 'Yash',
+        },
+        message: 'Adjust compressor settings testing',
+      },
     ],
   },
   {
-    hash: 'bar',
+    hash: 'bare',
     author: {
       name: 'Shresth',
     },
@@ -34,12 +41,74 @@ export const initialMockCommits = [
     tags: ['vocals', 'fx'],
   },
   {
-    hash: 'bar2',
+    hash: 'bar2f',
     author: {
       name: 'Shresth',
     },
     message: 'Add delay',
     tags: ['vocals', 'fx'],
+    subBranch: [
+      {
+        hash: 'foo1g',
+        author: {
+          name: 'Emma',
+        },
+        message: 'Add bass line',
+        subBranch: [
+          {
+            hash: 'foo1h',
+            author: {
+              name: 'Emma',
+            },
+            message: 'Add bass line',
+            subBranch: [
+              {
+                hash: 'foo1i',
+                author: {
+                  name: 'Emma',
+                },
+                message: 'Add bass line',
+              },
+              {
+                hash: 'foo2j',
+                author: {
+                  name: 'Emma',
+                },
+                message: 'Adjust compressor settings',
+              },
+            ],
+          },
+          {
+            hash: 'foo2k',
+            author: {
+              name: 'Emma',
+            },
+            message: 'Adjust compressor settings',
+          },
+          {
+            hash: 'foo3l',
+            author: {
+              name: 'Yash',
+            },
+            message: 'Adjust compressor settings testing',
+          },
+        ],
+      },
+      {
+        hash: 'foo2m',
+        author: {
+          name: 'Emma',
+        },
+        message: 'Adjust compressor settings',
+      },
+      {
+        hash: 'foo3n',
+        author: {
+          name: 'Yash',
+        },
+        message: 'Adjust compressor settings testing',
+      },
+    ],
   },
 ];
 

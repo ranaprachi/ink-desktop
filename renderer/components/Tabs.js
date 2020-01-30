@@ -43,7 +43,7 @@ const Tabs = ({ selectedTab, setSelectedTab, onTabClose, tabs, }) => {
                                                 <Space margin="0 0 0 15px">
                                                     <FontAwesomeIcon
                                                         color="#fff"
-                                                        size="ls"
+                                                        size="lg"
                                                         icon={faTimes}
                                                         onClick={() => onTabClose(index)}
                                                     />
