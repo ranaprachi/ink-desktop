@@ -252,7 +252,7 @@ export default function Project({ id }) {
                 )}
               />
               <LocalChangesList>
-                {delta && delta.tracks && (
+                {delta && delta.tracks ? (
                   <>
                     {delta.tracks.map((trackName, index) => (
                       <React.Fragment key={`new-${index}`}>
@@ -269,12 +269,11 @@ export default function Project({ id }) {
                         </Size>
                       </React.Fragment>
                     ))}
-                    {delta.tracks.length === 0 && (
-                      <NoNewTracksLine>
-                        <MoreInfo>No new tracks.</MoreInfo>
-                      </NoNewTracksLine>
-                    )}
                   </>
+                ) : (
+                  <NoNewTracksLine>
+                    <MoreInfo>No new tracks.</MoreInfo>
+                  </NoNewTracksLine>
                 )}
                 {/* {status.new && status.new.length > 0 && (
                   <React.Fragment>
@@ -364,7 +363,7 @@ export default function Project({ id }) {
               </CommitGraphContainer>
             </CenterPanel>
             <Panel md={3}>
-              <PanelHeader title={project.name.toUpperCase()} fontWeight="100" fontSize="21px" />
+              <PanelHeader title={project.name.toUpperCase()} fontWeight="100" fontSize="18px" />
               <Form className="m-2" onSubmit={handleInvite}>
                 <Space padding="40px">
                   <div>
