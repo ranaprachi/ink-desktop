@@ -19,7 +19,7 @@ const Header = ({ user }) => (
       <FlexContainer flow="row" justifyContent="space-between" alignItems="center" style={{ background: '#181818' }}>
         <Space padding="16px">
           <FlexContainer flow="row" alignItems="center">
-            <UserImage src={gravatar.url(user.email)} alt="User" size="45px" borderColor="#A3C4CB" />
+            <UserImage src={gravatar.url(user.email)} alt="User" size="40px" borderColor="#A3C4CB" />
             <Text color="#fff">{user.email}</Text>
           </FlexContainer>
         </Space>

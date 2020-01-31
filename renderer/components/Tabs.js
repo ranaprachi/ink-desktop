@@ -9,11 +9,22 @@ import styled from "styled-components";
 
 const TabHeaderContainer = styled(FlexContainer)`
     flex: 0;
+    position: relative;
 `;
 
 const TabBodyContainer = styled.div`
     overflow: auto;
     height: 100%;
+`;
+
+const TabsHeadDivider = styled.div`
+    position: absolute;
+    width: 2px;
+    height: 80%;
+    right: -1px;
+    z-index: 1;
+    border-radius: 2px;
+    background: #929292;
 `;
 
 const Tabs = ({ selectedTab, setSelectedTab, onTabClose, tabs, }) => {
@@ -50,6 +61,7 @@ const Tabs = ({ selectedTab, setSelectedTab, onTabClose, tabs, }) => {
                                                 </Space>
                                             )
                                     }
+                                    {index < tabs.length-1 ? <TabsHeadDivider/> : null}
                                 </TabHeaderContainer>
                             </Space>
                         ))}

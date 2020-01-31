@@ -55,7 +55,9 @@ const Node = ({ node, color }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
     <>
-      <NodeElement color={color} id={node.hash} />
+      <NodeElement color={color} id={node.hash}>
+        <UserImage src={gravatar.url(node.author.email || "")} size="20px" borderColor={color} alt="Author"/>
+      </NodeElement>
       <Tooltip
         placement="top"
         isOpen={isOpen}
@@ -119,7 +121,7 @@ const CommitGraph = ({ graph }) => {
   }
 
   return (
-    <Space padding="50px">
+    <Space padding="0 40px 20px">
       <FlexContainer flow="row">
         {graph.filter(grp => !!grp).map((graphNode) => makeGraph(graphNode, 0))}
       </FlexContainer>

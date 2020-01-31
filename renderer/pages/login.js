@@ -97,12 +97,7 @@ const Login = ({ router }) => {
               </FormGroup>
               <Space padding="20px 0">
                 <div>
-                  <Button 
-                    type="submit"
-                    block
-                  >
-                    Sign Up
-                  </Button>
+                  <Button type="submit" block>Sign Up</Button>
                 </div>
               </Space>
             </Form>

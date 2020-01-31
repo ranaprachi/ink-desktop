@@ -1,6 +1,5 @@
 import { remote } from 'electron';
 import React, { useCallback, useEffect, useState } from 'react';
-import Link from 'next/link';
 import Input from '../components/Input';
 import styled from 'styled-components';
 import { Row, Col, H5, Button, Container } from '@bootstrap-styled/v4';
@@ -50,8 +49,12 @@ const SpinnerContainer = styled.div`
 
 const CloneInput = styled(Input)`
   background: transparent;
+  border: 4px solid #929292;
   color: #fff;
   flex-grow: 1;
+  &:focus {
+      outline: none;
+  }
 `;
 
 const Dashboard = ({ openTab }) => {

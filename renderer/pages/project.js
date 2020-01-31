@@ -10,6 +10,8 @@ import {
   Form,
   FormGroup,
 } from '@bootstrap-styled/v4';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDesktop } from '@fortawesome/free-solid-svg-icons';
 import Header from '../components/Header';
 import Input from '../components/Input';
 import Textarea from '../components/Textarea';
@@ -32,12 +34,12 @@ import useTemporaryState from '../effects/useTemporaryState';
 import { animated } from 'react-spring';
 import useFade from '../effects/useFade';
 import { initialMockCommits, trackEmoji } from '../mocks';
-import ActivityIcon from '../components/ActivityIcon';
 import requestFromWorker from '../lib/requestFromWorker';
 import Space from '../components/Space';
 import Text from '../components/Text';
 import Size from '../components/Size';
 import bg from './bg.jpeg';
+import FlexContainer from '../components/FlexContainer';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -52,10 +54,10 @@ const TrackIcon = styled.em`
   font-style: normal;
 `;
 
-const TrackName = styled.span`
-  font-size: 20px;
-  line-height: 100%;
-  color: ${buttonPrimary};
+const TrackName = styled(Text)`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const MoreInfo = styled.em`
@@ -71,38 +73,19 @@ const TrackLine = styled(Col).attrs({
   margin-top: ${props => (props.offsetTop || 0) + 10}px;
 `;
 
-const MoreTracksLine = styled(TrackLine)`
-  margin-top: 14px;
-`;
-
 const NoNewTracksLine = styled(TrackLine)`
   margin-top: 12px;
-`;
-
-const GraphTitle = styled(H5)`
-  display: flex;
-  flex-flow: row;
-  align-items: center;
 `;
 
 const SendSuccess = styled(animated.em)`
   display: inline-block;
   margin: 3px;
-
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
   color: ${complementaryPrimary};
 `;
 
-const IconLink = styled.div`
-  transition: opacity ease-in-out 0.15s;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
 
 const SendButton = styled(Button)`
   float: right;
@@ -121,6 +104,39 @@ const CenterPanel = styled(Col)`
 const CommitGraphContainer = styled(Row)`
   overflow: auto;
   height: 100%;
+`;
+
+const LocalChangesDivider = styled.div`
+  width: 100%;
+  height: 6px;
+  background: #181818;
+`;
+
+const LocalChangesList = styled.div`
+  min-height: 300px;
+  max-height: calc(100vh - 320px);
+  overflow: auto;
+`;
+
+const LocalChangeHorizontalBranch = styled.div`
+  width: 23px;
+  height: 0px;
+  border: 1px solid #929292;
+  margin-right: 10px;
+  flex-shrink: 0;
+`;
+
+const LocalChangeVerticalBranch = styled.div`
+  width: 2px;
+  height: ${props => props.height};
+  background: #929292;
+  align-self: flex-start;
+  flex-shrink: 0;
+`;
+
+const CommitHistoryHeading = styled(FlexContainer)`
+  top: 30px;
+  position: relative;
 `;
 
 export default function Project({ id }) {
@@ -222,94 +238,103 @@ export default function Project({ id }) {
     <>
       {user ? <Header user={user} project={project} /> : null}
       {project ? (
-        <Space padding="77px 0 0">
+        <Space padding="76px 0 0">
           <TallRow>
             <Panel md={3}>
               <PanelHeader
-                title="Changed Tracks"
+                title="Local changes"
                 fontWeight="bold"
+                fontSize="18px"
                 renderIcon={() => (
-                  <IconLink onClick={handleRefreshProject}>
-                    <ActivityIcon />
-                  </IconLink>
+                  <Space margin="0 20px 0 0">
+                    <FontAwesomeIcon color="#74757A" size="lg" icon={faDesktop} />
+                  </Space>
                 )}
               />
-              {delta && delta.tracks && (
-                <>
-                  {delta.tracks.slice(1, 5).map((trackName, index) => (
-                    <TrackLine key={`new-${index}`}>
-                      <TrackIcon>{trackEmoji[index]}</TrackIcon>
-                      <TrackName>{trackName}</TrackName>
-                    </TrackLine>
-                  ))}
-                  {delta.tracks.length > 5 && (
-                    <MoreTracksLine>
-                      <MoreInfo>
-                        + {delta.tracks.length - 5} more tracks
-                      </MoreInfo>
-                    </MoreTracksLine>
-                  )}
-                  {delta.tracks.length === 0 && (
-                    <NoNewTracksLine>
-                      <MoreInfo>No new tracks.</MoreInfo>
-                    </NoNewTracksLine>
-                  )}
-                </>
-              )}
-
-              {/*status.new && status.new.length > 0 && (
-                <React.Fragment>
-                  <Row>
-                    <H6>New Files</H6>
-                  </Row>
-
-                  {status.new.map((filePath, index) => (
-                    <Row key={`new-${index}`}>
-                      <Col md={12}>
-                        <code>{filePath}</code>
-                      </Col>
+              <LocalChangesList>
+                {delta && delta.tracks && (
+                  <>
+                    {delta.tracks.map((trackName, index) => (
+                      <React.Fragment key={`new-${index}`}>
+                        {index === 0 ? <Space margin="0 30px"><LocalChangeVerticalBranch height="20px" /></Space> : null}
+                        <Size height="40px">
+                          <Space margin="0 30px">
+                            <FlexContainer flow="row" alignItems="center">
+                              <LocalChangeVerticalBranch height={index < delta.tracks.length-1 ? "40px" : "21px"} />
+                              <LocalChangeHorizontalBranch />
+                              <TrackIcon>{trackEmoji[index%5]}</TrackIcon>
+                              <TrackName size="16px" weight="100">{trackName}</TrackName>
+                            </FlexContainer>
+                          </Space>
+                        </Size>
+                      </React.Fragment>
+                    ))}
+                    {delta.tracks.length === 0 && (
+                      <NoNewTracksLine>
+                        <MoreInfo>No new tracks.</MoreInfo>
+                      </NoNewTracksLine>
+                    )}
+                  </>
+                )}
+                {/* {status.new && status.new.length > 0 && (
+                  <React.Fragment>
+                    <Row>
+                      <H6>New Files</H6>
                     </Row>
-                  ))}
-                </React.Fragment>
-              )*/}
-              {/*status.modified && status.modified.length > 0 && (
-                <React.Fragment>
-                  <Row>
-                    <H6>Modified Files</H6>
-                  </Row>
 
-                  {status.modified.map((filePath, index) => (
-                    <Row key={`new-${index}`}>
-                      <Col md={12}>
-                        <code>{filePath}</code>
+                    {status.new.map((filePath, index) => (
+                      <Row key={`new-${index}`}>
+                        <Col md={12}>
+                          <code>{filePath}</code>
                         </Col>
+                      </Row>
+                    ))}
+                  </React.Fragment>
+                )}
+                {status.modified && status.modified.length > 0 && (
+                  <React.Fragment>
+                    <Row>
+                      <H6>Modified Files</H6>
                     </Row>
-                  ))}
-                </React.Fragment>
-              )*/}
-
+                    {status.modified.map((filePath, index) => (
+                      <Row key={`new-${index}`}>
+                        <Col md={12}>
+                          <code>{filePath}</code>
+                          </Col>
+                      </Row>
+                    ))}
+                  </React.Fragment>
+                )} */}
+              </LocalChangesList>
+              <LocalChangesDivider/>
               <Form onSubmit={handleSignCommit} className="m-2 mt-4">
-                <FormGroup>
-                  <Input
-                    required
-                    type="text"
-                    placeholder="Enter message"
-                    {...bindCommitMessage}
-                  />
-                </FormGroup>
-                <Button
-                  disabled={!(delta && delta.tracks && delta.tracks.length > 0)}
-                  className="mr-2"
-                  type="submit"
-                >
-                  Sign
-                </Button>
-                <Button className="mr-2" onClick={handlePush}>
-                  Push
-                </Button>
-                <Button className="mr-2" onClick={handlePull}>
-                  Pull
-                </Button>
+                <Space padding="10px 20px">
+                  <div>
+                    <FormGroup>
+                      <Input
+                        required
+                        type="text"
+                        placeholder="Enter message"
+                        {...bindCommitMessage}
+                      />
+                    </FormGroup>
+                    <FlexContainer flow="row">
+                      <Space margin="0 15px 0 0">
+                        <Button disabled={!(delta && delta.tracks && delta.tracks.length > 0)} type="submit">
+                          Sign
+                        </Button>
+                      </Space>
+                      <Space margin="0 15px 0 0">
+                        <Button onClick={handlePush} color="secondary">
+                          Push
+                        </Button>
+                      </Space>
+                      <Button onClick={handlePull} color="info">
+                        Pull
+                      </Button>
+                    </FlexContainer>
+                  </div>
+                </Space>
                 {commitSignedTransitions.map(
                   ({ item, key, props }) =>
                     item && (
@@ -326,6 +351,14 @@ export default function Project({ id }) {
                   <MediaPlayerContainer />
                 </Size>
               </Row>
+              <Space padding="15px 15px 0">
+                <CommitHistoryHeading flow="row">
+                  <Space margin="0px 10px">
+                    <div><HistoryIcon/></div>
+                  </Space>
+                  <Text size="21px" weight="900">Commit History</Text>
+                </CommitHistoryHeading>
+              </Space>
               <CommitGraphContainer className="mt-3">
                 <CommitGraph graph={initialMockCommits.concat(graph)} />
               </CommitGraphContainer>
