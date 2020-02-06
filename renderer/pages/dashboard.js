@@ -115,7 +115,7 @@ const Dashboard = ({ openTab }) => {
             {user ? <Header user={user} /> : null}
             <Space padding="77px 0 0">
                 <TallRow>
-                    <Panel md={3}>
+                    <Panel md={2}>
                         <Space padding="15px 15px 0">
                             <Text size="21px" weight="900">Projects</Text>
                         </Space>
@@ -170,7 +170,7 @@ const Dashboard = ({ openTab }) => {
                                                         placeholder="Project Url"
                                                     />
                                                 </Space>
-                                                <Button>Clone</Button>
+                                                <Button size="sm">Clone</Button>
                                             </FlexContainer>
                                         </div>
                                     </Size>

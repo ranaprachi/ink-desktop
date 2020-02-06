@@ -43,7 +43,11 @@ const inkTheme = makeTheme({
   '$font-size-base': '1rem',
   '$btn-padding-x': '.87rem',
   '$btn-padding-y': '.87rem',
-  '$btn-border-radius': '.5rem'
+  '$btn-padding-x-sm': '1rem',
+  '$btn-padding-y-sm': '.5rem',
+  '$btn-border-radius': '.3rem',
+  '$btn-border-radius-sm': '.3rem',
+  '$btn-font-weight': '900'
 });
 
 export default inkTheme;

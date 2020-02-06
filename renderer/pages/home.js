@@ -5,11 +5,13 @@ import Dashboard from './dashboard';
 import Project from './project';
 import Tabs from '../components/Tabs';
 import Text from '../components/Text';
+import Size from '../components/Size';
 import FlexContainer from '../components/FlexContainer';
 import Space from '../components/Space';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileAudio } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components';
+import Logo from '../components/Logo';
 
 const HeaderText = styled(Text)`
   white-space: nowrap;
@@ -21,25 +23,23 @@ const Home = () => {
   const [tabs, setTabs] = React.useState([{
     id: null,
     head: () => (
-      <HeaderText color="#fff" size="16px" weight="900" family="Bowlby One">
-        INK
-      </HeaderText>
+      <Size height="60px">
+        <FlexContainer alignItems="center" justifyContent="center"><Logo width="40" /></FlexContainer>
+      </Size>
     ),
     isPinned: true,
     content: () => (<Dashboard openTab={openProject} />)
   }]);
 
-  React.useEffect(() => setSelectedTab(tabs.length - 1), [tabs]);
-
   const openProject = (project) => {
     setTabs((prevTabs) => {
-      const currIndex = prevTabs.findIndex((tab) => tab.id && tab.id === project.id)
-      if (currIndex !== -1) {
-        setSelectedTab(currIndex);
+      const projectIndex = prevTabs.findIndex((tab) => tab.id && tab.id === project.id)
+      if (projectIndex !== -1) {
+        setSelectedTab(projectIndex);
         return prevTabs;
       }
 
-      return [
+      let newTabs = [
         ...prevTabs,
         {
           id: project.id,
@@ -54,15 +54,21 @@ const Home = () => {
           isPinned: false,
           content: () => (<Project id={project.id} />),
         }
-      ]
+      ];
+      setSelectedTab(newTabs.length-1);
+      return newTabs;
     });
   }
 
   const onTabClose = (tabIndex) => {
     let newTabs = [...tabs];
     newTabs.splice(tabIndex, 1);
+    if(selectedTab === tabIndex) {
+      setSelectedTab(0);
+    } else {
+      setSelectedTab(newTabs.findIndex((tab) => tab.id === tabs[selectedTab].id))
+    }
     setTabs(newTabs);
-    setSelectedTab(0);
   }
 
   return (

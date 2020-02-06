@@ -56,19 +56,22 @@ const Tabs = ({ selectedTab, setSelectedTab, onTabClose, tabs, }) => {
                                                         color="#fff"
                                                         size="lg"
                                                         icon={faTimes}
-                                                        onClick={() => onTabClose(index)}
+                                                        onClick={(event) => {
+                                                            event.stopPropagation(); 
+                                                            onTabClose(index);
+                                                        }}
                                                     />
                                                 </Space>
                                             )
                                     }
-                                    {index < tabs.length-1 ? <TabsHeadDivider/> : null}
+                                    {index === 0 ? <TabsHeadDivider/> : null}
                                 </TabHeaderContainer>
                             </Space>
                         ))}
                     </FlexContainer>
                 </Size>
                 <TabBodyContainer>
-                    {tabs[selectedTab].content()}
+                    {tabs[selectedTab] ? tabs[selectedTab].content() : null}
                 </TabBodyContainer>
             </FlexContainer>
         </Size >

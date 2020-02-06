@@ -40,6 +40,7 @@ import Text from '../components/Text';
 import Size from '../components/Size';
 import bg from './bg.jpeg';
 import FlexContainer from '../components/FlexContainer';
+import TypeAhead from '../components/TypeAhead';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -98,7 +99,7 @@ const MediaPlayerContainer = styled.div`
 
 const CenterPanel = styled(Col)`
   overflow: hidden;
-  backgroundImage: url(${bg})
+  background: url(${bg})
 `;
 
 const CommitGraphContainer = styled(Row)`
@@ -134,18 +135,15 @@ const LocalChangeVerticalBranch = styled.div`
   flex-shrink: 0;
 `;
 
-const CommitHistoryHeading = styled(FlexContainer)`
-  top: 30px;
-  position: relative;
-`;
-
 export default function Project({ id }) {
+
+  const [receipientValue, setReceipientValue] = React.useState('');
 
   const { projects } = useProjects();
   const { user } = useUser();
   const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
   const [mailSent, setMailSent] = useTemporaryState(false, 5000, () => {
-    resetInvitationRecipient();
+    setReceipientValue("");
     resetInvitationMessage();
   });
   const mailSentTransitions = useFade(mailSent);
@@ -162,12 +160,6 @@ export default function Project({ id }) {
     value: commitMessage,
     bind: bindCommitMessage,
     reset: resetCommitMessage,
-  } = useInput('');
-
-  const {
-    value: invitationRecipient,
-    bind: bindInvitationRecipient,
-    reset: resetInvitationRecipient,
   } = useInput('');
 
   const {
@@ -216,8 +208,7 @@ export default function Project({ id }) {
   const handleInvite = useCallback(async event => {
     event.preventDefault();
 
-    const recipients = invitationRecipient
-      .split(/[ ,]+/)
+    const recipients = receipientValue.split(/[ ,]+/)
       .map(recipient => recipient.trim());
     await inviteCollaborators(
       recipients,
@@ -240,7 +231,7 @@ export default function Project({ id }) {
       {project ? (
         <Space padding="76px 0 0">
           <TallRow>
-            <Panel md={3}>
+            <Panel md={2}>
               <PanelHeader
                 title="Local changes"
                 fontWeight="bold"
@@ -318,17 +309,17 @@ export default function Project({ id }) {
                       />
                     </FormGroup>
                     <FlexContainer flow="row">
-                      <Space margin="0 15px 0 0">
-                        <Button disabled={!(delta && delta.tracks && delta.tracks.length > 0)} type="submit">
+                      <Space margin="0 10px 0 0">
+                        <Button size="sm" disabled={!(delta && delta.tracks && delta.tracks.length > 0)} type="submit">
                           Sign
                         </Button>
                       </Space>
-                      <Space margin="0 15px 0 0">
-                        <Button onClick={handlePush} color="secondary">
+                      <Space margin="0 10px 0 0">
+                        <Button size="sm" onClick={handlePush} color="secondary">
                           Push
                         </Button>
                       </Space>
-                      <Button onClick={handlePull} color="info">
+                      <Button size="sm" onClick={handlePull} color="info">
                         Pull
                       </Button>
                     </FlexContainer>
@@ -350,14 +341,6 @@ export default function Project({ id }) {
                   <MediaPlayerContainer />
                 </Size>
               </Row>
-              <Space padding="15px 15px 0">
-                <CommitHistoryHeading flow="row">
-                  <Space margin="0px 10px">
-                    <div><HistoryIcon/></div>
-                  </Space>
-                  <Text size="21px" weight="900">Commit History</Text>
-                </CommitHistoryHeading>
-              </Space>
               <CommitGraphContainer className="mt-3">
                 <CommitGraph graph={initialMockCommits.concat(graph)} />
               </CommitGraphContainer>
@@ -378,14 +361,12 @@ export default function Project({ id }) {
                         Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                       </Text>
                     </Space>
-                    <FormGroup>
-                      <Input
-                        required
-                        type="email"
-                        placeholder="Recipient"
-                        {...bindInvitationRecipient}
-                      />
-                    </FormGroup>
+                    <TypeAhead 
+                      placeholder="Enter Recipient"
+                      onChange={setReceipientValue}
+                      value={receipientValue}
+                      type="email"
+                    />
                     <FormGroup>
                       <Textarea
                         required
@@ -394,7 +375,7 @@ export default function Project({ id }) {
                         {...bindInvitationMessage}
                       />
                     </FormGroup>
-                    <SendButton type="submit">Send</SendButton>
+                    <SendButton size="sm" type="submit">Send</SendButton>
                     {mailSentTransitions.map(
                       ({ item, key, props }) =>
                         item && (
